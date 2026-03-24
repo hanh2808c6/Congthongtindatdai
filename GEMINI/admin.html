@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Quản trị - Cập nhật văn bản pháp luật</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --gov-red: #b22222;
+            --gov-blue: #00558f;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .bg-gov-red { background-color: var(--gov-red); }
+        .bg-gov-blue { background-color: var(--gov-blue); }
+        .text-gov-red { color: var(--gov-red); }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-96">
+            <div class="text-center mb-6">
+                <i class="fas fa-lock text-gov-red text-4xl mb-3"></i>
+                <h1 class="text-2xl font-bold text-gov-red">Truy cập Quản trị</h1>
+                <p class="text-gray-600 text-sm mt-2">Nhập mật khẩu để tiếp tục</p>
+            </div>
+            <input type="password" id="adminPassword" placeholder="Mật khẩu quản trị..." 
+                   class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gov-red mb-4">
+            <button onclick="checkPassword()" class="w-full bg-gov-red text-white py-2 rounded font-bold hover:opacity-90">
+                Đăng nhập
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Admin Panel -->
+    <div id="adminPanel" class="hidden">
+        <!-- Header -->
+        <header class="bg-gov-blue text-white py-4 shadow-lg">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <h1 class="text-2xl font-bold"><i class="fas fa-cog mr-2"></i>Quản trị Văn bản Pháp luật</h1>
+                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded font-bold">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Đăng xuất
+                </button>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="container mx-auto px-4 py-8">
+            <!-- Add Document Form -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h2 class="text-xl font-bold text-gov-blue mb-4">
+                    <i class="fas fa-plus-circle mr-2"></i>Thêm Văn bản Pháp luật Mới
+                </h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                    <!-- Left Column -->
+                    <div>
+                        <!-- Loại văn bản -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-list mr-1 text-gov-red"></i>Loại Văn bản *
+                            </label>
+                            <select id="docType" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gov-red">
+                                <option value="">-- Chọn loại --</option>
+                                <option value="Luật">Luật</option>
+                                <option value="Nghị định">Nghị định</option>
+                                <option value="Thông tư">Thông tư</option>
+                                <option value="Quyết định">Quyết định</option>
+                                <option value="Công văn">Công văn</option>
+                            </select>
+                        </div>
+
+                        <!-- Document ID -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-tag mr-1 text-gov-red"></i>ID Văn bản (tự nhập) *
+                            </label>
+                            <input type="text" id="docId" placeholder="vd: ldd2024, nd101_2024" 
+                                   class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gov-red">
+                        </div>
+
+                        <!-- Title -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-heading mr-1 text-gov-red"></i>Tiêu đề Văn bản *
+                            </label>
+                            <input type="text" id="docTitle" placeholder="vd: Luật Đất đai số 31/2024/QH15" 
+                                   class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gov-red">
+                        </div>
+
+                        <!-- Date -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-calendar-alt mr-1 text-gov-red"></i>Ngày Ban hành (DD/MM/YYYY) *
+                            </label>
+                            <input type="text" id="docDate" placeholder="18/01/2024" 
+                                   class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gov-red">
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <!-- Agency -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-building mr-1 text-gov-red"></i>Cơ quan Ban hành *
+                            </label>
+                            <select id="docAgency" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gov-red">
+                                <option value="">-- Chọn cơ quan --</option>
+                                <option value="Quốc hội">Quốc hội</option>
+                                <option value="Chính phủ">Chính phủ</option>
+                                <option value="Bộ Tài nguyên và Môi trường">Bộ Tài nguyên và Môi trường</option>
+                                <option value="Bộ Tư pháp">Bộ Tư pháp</option>
+                                <option value="Bộ Xây dựng">Bộ Xây dựng</option>
+                            </select>
+                        </div>
+
+                        <!-- Excerpt -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-align-left mr-1 text-gov-red"></i>Tóm tắt/Nội dung ngắn
+                            </label>
+                            <textarea id="docExcerpt" rows="3" placeholder="Mô tả ngắn nội dung văn bản..." 
+                                      class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gov-red resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Upload -->
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-6 transition-colors" 
+                     id="dropZone"
+                     ondrop="handleDrop(event)" 
+                     ondragover="event.preventDefault(); document.getElementById('dropZone').classList.add('border-blue-500', 'bg-blue-50')"
+                     ondragleave="document.getElementById('dropZone').classList.remove('border-blue-500', 'bg-blue-50')">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-600 mb-2">Kéo file PDF/Word vào đây hoặc</p>
+                    <input type="file" id="docFile" accept=".pdf,.docx,.doc" onchange="handleFileSelect(event)" class="hidden">
+                    <button onclick="document.getElementById('docFile').click()" class="bg-gov-blue text-white px-6 py-2 rounded font-bold hover:opacity-90">
+                        Chọn File
+                    </button>
+                </div>
+
+                <div id="fileInfo" class="hidden mb-6 p-4 bg-gray-50 rounded border">
+                    <p class="text-sm"><strong>File đã chọn:</strong> <span id="fileName"></span></p>
+                    <p class="text-sm mt-1 text-gray-600">Kích thước: <span id="fileSize"></span></p>
+                </div>
+
+                <button id="submitBtn" onclick="submitDocument()" 
+                        class="w-full bg-gov-red text-white py-3 rounded font-bold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" 
+                        disabled>
+                    <i class="fas fa-save mr-2"></i>Lưu Văn bản
+                </button>
+            </div>
+
+            <!-- Status Message -->
+            <div id="statusMessage" class="hidden mb-6 p-4 rounded-lg flex items-start gap-3">
+                <i id="statusIcon" class="fas fa-spinner fa-spin text-2xl"></i>
+                <div>
+                    <p id="statusText" class="font-bold"></p>
+                    <p id="statusDetail" class="text-sm mt-1"></p>
+                </div>
+            </div>
+
+            <!-- Documents List -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gov-blue mb-4">
+                    <i class="fas fa-list mr-2"></i>Danh sách Văn bản Hiện có
+                </h2>
+                
+                <div id="docsList" class="space-y-2">
+                    <div class="text-center py-10 text-gray-500">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <p>Đang tải danh sách...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'admin@123';
+        let selectedFile = null;
+        let currentDocs = [];
+
+        // Check Admin Password
+        function checkPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadDocuments();
+            } else {
+                alert('Mật khẩu không đúng!');
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        // Logout
+        function logout() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('adminPassword').value = '';
+            resetForm();
+        }
+
+        // Handle Enter key
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('adminPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkPassword();
+            });
+        });
+
+        // File Selection
+        function handleFileSelect(event) {
+            selectedFile = event.target.files[0];
+            if (selectedFile) {
+                updateFileDisplay();
+            }
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                selectedFile = files[0];
+                document.getElementById('docFile').files = files;
+                updateFileDisplay();
+            }
+        }
+
+        function updateFileDisplay() {
+            if (!selectedFile) return;
+            document.getElementById('fileName').textContent = selectedFile.name;
+            document.getElementById('fileSize').textContent = (selectedFile.size / 1024).toFixed(2) + ' KB';
+            document.getElementById('fileInfo').classList.remove('hidden');
+            checkSubmitButton();
+        }
+
+        // Check if form is valid
+        function checkSubmitButton() {
+            const docId = document.getElementById('docId').value.trim();
+            const docTitle = document.getElementById('docTitle').value.trim();
+            const docType = document.getElementById('docType').value;
+            const docDate = document.getElementById('docDate').value.trim();
+            const docAgency = document.getElementById('docAgency').value;
+            const file = selectedFile;
+
+            const isValid = docId && docTitle && docType && docDate && docAgency && file;
+            document.getElementById('submitBtn').disabled = !isValid;
+        }
+
+        // Add event listeners for validation
+        ['docId', 'docTitle', 'docType', 'docDate', 'docAgency'].forEach(id => {
+            document.getElementById(id).addEventListener('input', checkSubmitButton);
+            document.getElementById(id).addEventListener('change', checkSubmitButton);
+        });
+
+        // Submit Document
+        async function submitDocument() {
+            const docId = document.getElementById('docId').value.trim();
+            const docTitle = document.getElementById('docTitle').value.trim();
+            const docType = document.getElementById('docType').value;
+            const docDate = document.getElementById('docDate').value.trim();
+            const docAgency = document.getElementById('docAgency').value;
+            const docExcerpt = document.getElementById('docExcerpt').value.trim();
+
+            // Validate date format
+            if (!/^\d{2}\/\d{2}\/\d{4}$/.test(docDate)) {
+                alert('Định dạng ngày không đúng! Vui lòng nhập DD/MM/YYYY');
+                return;
+            }
+
+            if (!selectedFile) {
+                alert('Vui lòng chọn file!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('password', ADMIN_PASSWORD);
+            formData.append('docId', docId);
+            formData.append('docTitle', docTitle);
+            formData.append('docType', docType);
+            formData.append('docDate', docDate);
+            formData.append('docAgency', docAgency);
+            formData.append('docExcerpt', docExcerpt);
+
+            showStatus('Đang lưu văn bản...', '', 'warning');
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                const response = await fetch('/admin/add-doc', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('✓ Lưu thành công!', `ID: ${docId} - File: ${selectedFile.name}`, 'success');
+                    setTimeout(() => {
+                        resetForm();
+                        loadDocuments();
+                    }, 1500);
+                } else {
+                    showStatus('✗ Lỗi lưu', result.error || 'Không xác định', 'error');
+                }
+            } catch (error) {
+                showStatus('✗ Lỗi kết nối', error.message, 'error');
+            }
+
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        // Reset Form
+        function resetForm() {
+            document.getElementById('docType').value = '';
+            document.getElementById('docId').value = '';
+            document.getElementById('docTitle').value = '';
+            document.getElementById('docDate').value = '';
+            document.getElementById('docAgency').value = '';
+            document.getElementById('docExcerpt').value = '';
+            document.getElementById('docFile').value = '';
+            document.getElementById('fileInfo').classList.add('hidden');
+            selectedFile = null;
+            checkSubmitButton();
+        }
+
+        // Load Documents
+        async function loadDocuments() {
+            try {
+                const response = await fetch('van_ban_phap_luat_dat_dai.json');
+                if (!response.ok) throw new Error('Không thể tải JSON');
+                currentDocs = await response.json();
+                displayDocuments();
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                currentDocs = [];
+                document.getElementById('docsList').innerHTML = '<div class="text-center py-10 text-gray-500">Chưa có văn bản nào hoặc JSON không tồn tại</div>';
+            }
+        }
+
+        // Display Documents
+        function displayDocuments() {
+            const docsList = document.getElementById('docsList');
+            
+            if (currentDocs.length === 0) {
+                docsList.innerHTML = '<div class="text-center py-10 text-gray-500">Chưa có văn bản nào. Thêm văn bản đầu tiên!</div>';
+                return;
+            }
+
+            docsList.innerHTML = currentDocs.map((doc, index) => `
+                <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gov-blue">${escapeHtml(doc.title || '')}</h3>
+                            <p class="text-xs text-gray-700 mt-1">
+                                <strong>ID:</strong> <code class="bg-gray-100 px-1 rounded">${escapeHtml(doc.id)}</code> | 
+                                <strong>Loại:</strong> ${escapeHtml(doc.type)} | 
+                                <strong>Ngày:</strong> ${escapeHtml(doc.date)}
+                            </p>
+                            <p class="text-xs text-gray-600 mt-1"><strong>Cơ quan:</strong> ${escapeHtml(doc.agency)}</p>
+                            <p class="text-xs text-gray-700 mt-2 italic">"${escapeHtml(doc.excerpt || '')}"</p>
+                            ${doc.pdfUrl ? `<p class="text-xs text-green-600 mt-1"><i class="fas fa-check-circle mr-1"></i>File: ${escapeHtml(doc.pdfUrl)}</p>` : ''}
+                        </div>
+                        <button onclick="deleteDocument('${doc.id}')" 
+                                class="text-red-600 hover:text-red-800 font-bold text-sm ml-4 whitespace-nowrap">
+                            <i class="fas fa-trash mr-1"></i>Xóa
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Delete Document
+        async function deleteDocument(docId) {
+            if (!confirm(`Xóa văn bản có ID "${docId}"?`)) return;
+
+            try {
+                const response = await fetch('/admin/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: docId, password: ADMIN_PASSWORD })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showStatus('✓ Xóa thành công!', docId, 'success');
+                    setTimeout(() => loadDocuments(), 1000);
+                } else {
+                    showStatus('✗ Lỗi xóa', result.error, 'error');
+                }
+            } catch (error) {
+                showStatus('✗ Lỗi kết nối', error.message, 'error');
+            }
+        }
+
+        // Helper: Escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Show Status Message
+        function showStatus(title, detail, type) {
+            const msg = document.getElementById('statusMessage');
+            const icon = document.getElementById('statusIcon');
+            const text = document.getElementById('statusText');
+            const details = document.getElementById('statusDetail');
+
+            msg.classList.remove('hidden', 'bg-yellow-50', 'bg-green-50', 'bg-red-50', 'border-yellow-300', 'border-green-300', 'border-red-300');
+            icon.classList.remove('fa-spinner', 'fa-check-circle', 'fa-times-circle', 'text-yellow-600', 'text-green-600', 'text-red-600');
+
+            if (type === 'warning') {
+                msg.classList.add('bg-yellow-50', 'border', 'border-yellow-300');
+                icon.classList.add('fa-spinner', 'fa-spin', 'text-yellow-600');
+            } else if (type === 'success') {
+                msg.classList.add('bg-green-50', 'border', 'border-green-300');
+                icon.classList.add('fa-check-circle', 'text-green-600');
+            } else if (type === 'error') {
+                msg.classList.add('bg-red-50', 'border', 'border-red-300');
+                icon.classList.add('fa-times-circle', 'text-red-600');
+            }
+
+            text.textContent = title;
+            details.textContent = detail;
+        }
+
+        // Init
+        window.addEventListener('load', () => {
+            document.getElementById('adminPassword').focus();
+        });
+    </script>
+</body>
+</html>

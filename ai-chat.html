@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Cổng Thông tin Pháp luật Đất đai - Chính phủ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --gov-red: #b22222;
+            --gov-yellow: #fff200;
+            --gov-blue: #00558f;
+        }
+        body { font-family: 'Roboto', 'Segoe UI', 'Noto Sans', Tahoma, Geneva, Verdana, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        * { letter-spacing: 0.01em; }
+        .bg-gov-red { background-color: var(--gov-red); }
+        .text-gov-red { color: var(--gov-red); }
+        .bg-gov-blue { background-color: var(--gov-blue); }
+        .border-gov-red { border-color: var(--gov-red); }
+        .nav-link:hover { background-color: rgba(255,255,255,0.1); }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+        }
+        .filter-btn { font-weight: 600; border: 1px solid #ddd; }
+        .filter-btn.active { background-color: #00558f; color: white; font-weight: bold; border-color: #003f6f; }
+        .action-btn { transition: all .2s ease; }
+        .action-btn.active { font-weight: bold; background-color: #fde047; color: #0f172a; }
+        .policy-link, .policy-item { font-weight: 600; }
+        .policy-link.active, .policy-item.active { background-color: #ffeb3b; color: #002b7f; font-weight: bold; }
+        .nav-link.active { background-color: #fff; color: #00558f; font-weight: bold; }
+        .sidebar-item { cursor: pointer; }
+        .sidebar-item.active { background-color: #fef3c7; color: #92400e; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- Top Bar -->
+    <div class="bg-gov-red text-white py-1 px-4 text-xs flex justify-between items-center border-b border-yellow-400">
+        <div class="flex items-center gap-4">
+            <span id="currentDate"><i class="fas fa-calendar-alt mr-1"></i> Thứ Hai, ngày 01/02/2026</span>
+            <span class="hidden md:inline italic">CƠ QUAN NGÔN LUẬN CỦA CHÍNH PHỦ</span>
+        </div>
+        <div class="flex gap-4">
+            <a href="#" class="hover:underline">English</a>
+            <a href="#" class="hover:underline">Sơ đồ cổng</a>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="bg-white border-b-4 border-gov-red py-4 shadow-sm">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center gap-4">
+            <div class="flex items-center gap-4 flex-1">
+                <img src="/GEMINI/9d8ed5_64b820680dbe4c408e41f203c994f8b5~mv2.avif" alt="Quốc huy" class="h-20 w-20 object-contain">
+                <div>
+                    <h1 class="text-xl md:text-3xl font-bold text-gov-red uppercase tracking-tight">Cổng Thông tin Pháp luật Đất đai</h1>
+                    <h2 class="text-sm md:text-lg font-semibold text-gov-blue uppercase">NƯỚC CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h2>
+                </div>
+            </div>
+            <div class="w-full md:w-72 relative">
+                <input type="text" id="globalSearch" placeholder="Tìm kiếm văn bản..." 
+                       class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-gov-red shadow-inner">
+                <button onclick="doSearch(document.getElementById('globalSearch').value.trim())" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gov-red">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="bg-gov-blue text-white sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <ul class="flex overflow-x-auto whitespace-nowrap text-sm font-bold uppercase py-1">
+                <li><a href="/GEMINI/index.html" id="homeNav" onclick="setNavActive(this)" class="inline-block px-4 py-3 nav-link border-r border-blue-800 bg-white/10"><i class="fas fa-home"></i></a></li>
+                <li class="relative">
+                    <a href="/GEMINI/c=CSM.html" id="policyMainLink" onclick="setNavActive(this); toggleDropdown('policyDropdown'); setPolicyActive('main');" class="policy-link inline-block px-4 py-3 nav-link border-r border-blue-800">Chính sách mới</a>
+                    <ul class="absolute left-0 top-full bg-white shadow-md hidden z-10 min-w-[200px]" id="policyDropdown">
+                        <li><a href="#" id="policy_price" onclick="setPolicyActive('Chính sách về giá đất 2024')" class="policy-item block px-4 py-2 hover:bg-gray-100 text-sm">Chính sách về giá đất 2024</a></li>
+                        <li><a href="#" id="policy_compensation" onclick="setPolicyActive('Chính sách bồi thường thu hồi đất')" class="policy-item block px-4 py-2 hover:bg-gray-100 text-sm">Chính sách bồi thường thu hồi đất</a></li>
+                        <li><a href="#" id="policy_registration" onclick="setPolicyActive('Chính sách đăng ký đất đai online')" class="policy-item block px-4 py-2 hover:bg-gray-100 text-sm">Chính sách đăng ký đất đai online</a></li>
+                        <li><a href="#" id="policy_relocation" onclick="setPolicyActive('Chính sách hỗ trợ tái định cư')" class="policy-item block px-4 py-2 hover:bg-gray-100 text-sm">Chính sách hỗ trợ tái định cư</a></li>
+                    </ul>
+                </li>
+                <li><a href="/GEMINI/vanbanquypham.html" id="vbqpNav" onclick="setNavActive(this)" class="inline-block px-4 py-3 nav-link border-r border-blue-800">Văn bản quy phạm</a></li>
+                <li><a href="#" onclick="setNavActive(this)" class="inline-block px-4 py-3 nav-link border-r border-blue-800">Trả lời công dân</a></li>
+                <li><a href="#" onclick="setNavActive(this)" class="inline-block px-4 py-3 nav-link border-r border-blue-800">Dự thảo luật</a></li>
+                <li><a href="/GEMINI/ai-chat.html" id="aiNav" class="inline-block px-4 py-3 nav-link">Tương tác AI</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="container mx-auto px-4 py-6 flex-1 grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- Left history panel -->
+        <aside class="md:col-span-1 bg-white rounded shadow-sm border border-gray-200 p-4 h-[650px] overflow-y-auto">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="font-bold text-lg text-gov-blue">Lịch sử hỏi đáp</h2>
+                <button id="clearHistoryBtn" class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">Xóa</button>
+            </div>
+            <div id="historyList" class="space-y-2"></div>
+            <div id="historyEmpty" class="text-sm text-gray-500 italic mt-4">Chưa có lịch sử. Nhập câu hỏi bên phải để bắt đầu.</div>
+        </aside>
+
+        <!-- Right chat window -->
+        <section class="md:col-span-3 bg-white rounded shadow-sm border border-gray-200 p-4 flex flex-col h-[650px]">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-lg text-gov-blue">Hộp Chat Trợ lý Luật Đất đai</h2>
+                <button id="loadHistoryBtn" class="text-xs bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">Load</button>
+            </div>
+            <div id="chatBox" class="flex-1 overflow-y-auto bg-gray-50 rounded p-4 space-y-3 border border-gray-200"></div>
+            <div class="mt-4 flex gap-2">
+                <input id="chatInput" type="text" placeholder="Nhập câu hỏi của bạn về đất đai..." class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gov-blue" />
+                <button id="sendBtn" class="bg-gov-red text-white px-4 py-2 rounded hover:bg-red-700">Gửi</button>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">*Nội dung AI chỉ mang tính chất tham khảo. Kiểm tra văn bản gốc trước khi đối chiếu pháp lý.</p>
+        </section>
+    </main>
+    <footer class="bg-[#222] text-gray-400 py-10 border-t-8 border-gov-red">
+        <div class="container mx-auto px-4 text-sm text-center">
+            &copy; 2026 Cổng Thông tin Pháp luật Đất đai.
+        </div>
+    </footer>
+    <script>
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        const storageKey = 'aiChatHistory';
+        let chatHistory = [];
+
+        const chatBox = document.getElementById('chatBox');
+        const input = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const loadHistoryBtn = document.getElementById('loadHistoryBtn');
+
+        function saveHistory() {
+            localStorage.setItem(storageKey, JSON.stringify(chatHistory));
+        }
+
+        function getUserQuestions() {
+            return chatHistory
+                .map((item, index) => ({ ...item, index }))
+                .filter(item => item.role === 'user');
+        }
+
+        function renderHistoryList() {
+            const historyList = document.getElementById('historyList');
+            const historyEmpty = document.getElementById('historyEmpty');
+            historyList.innerHTML = '';
+
+            const questions = getUserQuestions();
+            if (!questions.length) {
+                historyEmpty.classList.remove('hidden');
+                return;
+            }
+            historyEmpty.classList.add('hidden');
+
+            questions.reverse().forEach(item => {
+                const qItem = document.createElement('div');
+                qItem.className = 'bg-gray-100 hover:bg-gray-200 p-2 rounded border border-gray-200 cursor-pointer text-sm';
+                qItem.title = item.text;
+                qItem.innerHTML = `<div class="font-semibold">${escapeHtml(item.text.length > 60 ? item.text.slice(0, 60) + '...' : item.text)}</div><div class="text-xs text-gray-500">${new Date(item.when).toLocaleString('vi-VN')}</div>`;
+                qItem.addEventListener('click', () => {
+                    input.value = item.text;
+                    input.focus();
+                });
+                historyList.appendChild(qItem);
+            });
+        }
+
+        function renderHistory() {
+            chatBox.innerHTML = '';
+            if (!chatHistory.length) {
+                chatBox.innerHTML = '<div class="text-sm text-gray-500 italic">Chưa có câu hỏi nào. Nhập truy vấn và gửi để bắt đầu.</div>';
+                renderHistoryList();
+                return;
+            }
+            chatHistory.forEach(item => {
+                if (item.role === 'user') {
+                    const m = document.createElement('div');
+                    m.className = 'flex justify-end gap-2';
+                    m.innerHTML = `<div class="bg-gov-blue text-white p-3 rounded-lg shadow-sm max-w-[85%]">${escapeHtml(item.text)}</div>`;
+                    chatBox.appendChild(m);
+                } else {
+                    const m = document.createElement('div');
+                    m.className = 'flex items-start gap-2';
+                    m.innerHTML = `<div class="w-8 h-8 rounded-full bg-gov-red flex items-center justify-center text-white shrink-0"><i class="fas fa-robot text-xs"></i></div><div class="bg-white p-3 rounded-lg border shadow-sm max-w-[85%] whitespace-pre-line">${escapeHtml(item.text)}</div>`;
+                    chatBox.appendChild(m);
+                }
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+            renderHistoryList();
+        }
+
+        function loadHistory() {
+            const saved = localStorage.getItem(storageKey);
+            if (saved) {
+                try {
+                    chatHistory = JSON.parse(saved);
+                } catch (e) {
+                    chatHistory = [];
+                }
+            } else {
+                chatHistory = [];
+            }
+            renderHistory();
+        }
+
+        function appendMessage(role, text) {
+            chatHistory.push({ role, text, when: new Date().toISOString() });
+            saveHistory();
+            renderHistory();
+        }
+
+        async function sendChat() {
+            const question = input.value.trim();
+            if (!question) return;
+
+            appendMessage('user', question);
+            input.value = '';
+
+            const placeholderId = 'ai-placeholder-' + Date.now();
+            const placeholder = document.createElement('div');
+            placeholder.className = 'flex items-start gap-2';
+            placeholder.id = placeholderId;
+            placeholder.innerHTML = `<div class="w-8 h-8 rounded-full bg-gov-red flex items-center justify-center text-white shrink-0"><i class="fas fa-gavel text-xs"></i></div><div class="bg-white p-3 rounded-lg border shadow-sm max-w-[85%]"><i class="fas fa-spinner fa-spin mr-2"></i>Đang tra cứu...</div>`;
+            chatBox.appendChild(placeholder);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const systemPrompt = `Bạn là chuyên gia pháp luật đất đai Việt Nam. Trả lời ngắn gọn, chính xác và trích nguồn luật. Người dùng hỏi: "${question}".`;
+
+            try {
+                const response = await fetch('/api/gemini-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: [{ role: 'user', parts: [{ text: question }] }], systemPrompt })
+                });
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const data = await response.json();
+                if (!data.success) throw new Error(data.error || 'Không thể lấy phản hồi AI');
+
+                const aiText = (data.text || 'Xin lỗi, tôi chưa tìm được câu trả lời rõ ràng.').trim();
+                const aiElements = document.getElementById(placeholderId);
+                if (aiElements) {
+                    aiElements.innerHTML = `<div class="w-8 h-8 rounded-full bg-gov-red flex items-center justify-center text-white shrink-0"><i class="fas fa-robot text-xs"></i></div><div class="bg-white p-3 rounded-lg border shadow-sm max-w-[85%] whitespace-pre-line">${escapeHtml(aiText)}</div>`;
+                }
+                appendMessage('assistant', aiText);
+            } catch (error) {
+                const aiElements = document.getElementById(placeholderId);
+                if (aiElements) {
+                    aiElements.innerHTML = `<div class="w-8 h-8 rounded-full bg-gov-red flex items-center justify-center text-white shrink-0"><i class="fas fa-robot text-xs"></i></div><div class="bg-white p-3 rounded-lg border shadow-sm max-w-[85%] text-red-600">Lỗi kết nối AI: ${escapeHtml(error.message)}</div>`;
+                }
+                console.error(error);
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function clearHistory() {
+            if (confirm('Xóa toàn bộ lịch sử chat?')) {
+                chatHistory = [];
+                saveHistory();
+                renderHistory();
+            }
+        }
+
+        function highlightCurrentPageNav() {
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.getElementById('aiNav')?.classList.add('active');
+        }
+
+        window.addEventListener('load', function() {
+            updateDate();
+            setInterval(updateDate, 60000);
+            highlightCurrentPageNav();
+            loadHistory();
+            sendBtn.addEventListener('click', sendChat);
+            input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendChat(); });
+            clearHistoryBtn.addEventListener('click', clearHistory);
+            loadHistoryBtn.addEventListener('click', loadHistory);
+        });
+
+        function updateDate() {
+            const now = new Date();
+            const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+            const day = days[now.getDay()];
+            const date = now.getDate().toString().padStart(2, '0');
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const year = now.getFullYear();
+            document.getElementById('currentDate').innerHTML = `<i class="fas fa-calendar-alt mr-1"></i> ${day}, ngày ${date}/${month}/${year}`;
+        }
+    </script>
+</body>
+</html>

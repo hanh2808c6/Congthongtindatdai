@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Hiến pháp và Luật - Cổng Thông tin Pháp luật Đất đai</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --gov-red: #b22222;        /* Đỏ tinh tế hơn */
+            --gov-yellow: #fff200;
+            --gov-blue: #00558f;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .bg-gov-red { background-color: var(--gov-red); }
+        .text-gov-red { color: var(--gov-red); }
+        .bg-gov-blue { background-color: var(--gov-blue); }
+        .border-gov-red { border-color: var(--gov-red); }
+        .nav-link { transition: background-color 0.3s ease; }
+        .nav-link:hover { background-color: rgba(255,255,255,0.2); }
+        /* Carousel ẩn trên mobile, chỉ hiện từ md */
+        @media (max-width: 768px) {
+            .carousel-desktop {
+                display: none;
+            }
+        }
+        /* Chatbot floating */
+        #chatbot-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--gov-red);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+        #chatbot-icon:hover {
+            transform: scale(1.1);
+        }
+        /* Breadcrumb */
+        .breadcrumb a {
+            color: #4b5563;
+        }
+        .breadcrumb a:hover {
+            color: var(--gov-red);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- Top Bar (giữ nguyên) -->
+    <div class="bg-gov-red text-white py-1 px-4 text-xs flex justify-between items-center border-b border-yellow-400">
+        <div class="flex items-center gap-4">
+            <span id="currentDate"><i class="fas fa-calendar-alt mr-1"></i> Thứ Hai, ngày 01/02/2026</span>
+            <span class="hidden md:inline italic">CƠ QUAN NGÔN LUẬN CỦA CHÍNH PHỦ</span>
+        </div>
+        <div class="flex gap-4">
+            <a href="#" class="hover:underline">English</a>
+            <a href="#" class="hover:underline">Sơ đồ cổng</a>
+        </div>
+    </div>
+    <!-- Header (giữ nguyên, chỉ điều chỉnh màu nếu cần) -->
+    <header class="bg-white border-b-4 border-gov-red py-4 shadow-sm">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center gap-4">
+            <div class="flex items-center gap-4 flex-1">
+                <img src="9d8ed5_64b820680dbe4c408e41f203c994f8b5~mv2.avif" alt="Quốc huy" class="h-20 w-20 object-contain">
+                <div>
+                    <h1 class="text-xl md:text-3xl font-bold text-gov-red uppercase tracking-tight">Cổng Thông tin Pháp luật Đất đai</h1>
+                    <h2 class="text-sm md:text-lg font-semibold text-gov-blue uppercase">NƯỚC CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h2>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Navigation Menu (giữ nguyên) -->
+    <nav class="bg-gov-blue text-white sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <ul class="flex overflow-x-auto whitespace-nowrap text-sm font-bold uppercase py-1">
+                <li><a href="/index.html" class="inline-block px-4 py-3 nav-link border-r border-blue-800 bg-white/10"><i class="fas fa-home"></i></a></li>
+                <li><a href="/c=CSM.html" class="inline-block px-4 py-3 nav-link border-r border-blue-800">Chính sách mới</a></li>
+                <li><a href="/vanbanquypham.html" class="inline-block px-4 py-3 nav-link border-r border-blue-800">Văn bản quy phạm</a></li>
+                <li><a href="#" class="inline-block px-4 py-3 nav-link border-r border-blue-800">Trả lời công dân</a></li>
+                <li><a href="#" class="inline-block px-4 py-3 nav-link border-r border-blue-800">Dự thảo luật</a></li>
+                <li><a href="#" class="inline-block px-4 py-3 nav-link">Tương tác AI</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content - Cải tiến -->
+    <main class="container mx-auto px-4 py-8 flex-1">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb text-sm text-gray-600 mb-4" aria-label="Breadcrumb">
+            <ol class="list-none p-0 inline-flex flex-wrap">
+                <li class="flex items-center">
+                    <a href="/index.html" class="hover:text-gov-red">Trang chủ</a>
+                    <i class="fas fa-chevron-right mx-2 text-xs text-gray-400"></i>
+                </li>
+                <li class="flex items-center">
+                    <a href="#" class="hover:text-gov-red">Văn bản pháp luật</a>
+                    <i class="fas fa-chevron-right mx-2 text-xs text-gray-400"></i>
+                </li>
+                <li class="text-gray-800 font-semibold" aria-current="page">Hiến pháp và Luật</li>
+            </ol>
+        </nav>
+
+        <!-- Carousel (chỉ hiện trên desktop) -->
+        <div class="carousel-desktop mb-8 hidden md:block">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-2/3 p-6">
+                        <span class="bg-gov-red text-white text-xs font-bold px-2 py-1 rounded uppercase">Thông báo nổi bật</span>
+                        <h3 class="text-2xl font-bold text-gov-blue mt-3">Hiệu lực từ 01/08/2024: Luật Đất đai 2024 và các văn bản hướng dẫn</h3>
+                        <p class="text-gray-700 mt-2">Luật số 31/2024/QH15 chính thức thay thế Luật Đất đai 2013, cùng với Nghị quyết 254/2025/QH15 tháo gỡ vướng mắc.</p>
+                        <a href="#" class="inline-block mt-4 bg-gov-red text-white px-4 py-2 rounded hover:bg-red-700 transition">Xem chi tiết <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                    <div class="md:w-1/3 bg-gov-blue flex items-center justify-center p-4">
+                        <i class="fas fa-file-alt text-white text-8xl opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid 2 cột: Nội dung chính + Sidebar -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Cột chính (2/3) -->
+            <div class="lg:col-span-2">
+                <h2 class="text-2xl font-bold text-gov-red mb-4">Hiến pháp, Bộ luật, Luật, Nghị quyết (Quốc hội)</h2>
+                <p class="mb-6 text-gray-700">Đây là tầng văn bản luật cao nhất, quy định những nguyên tắc cốt lõi.</p>
+
+                <!-- Hiến pháp (Card) -->
+                <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-gov-red mb-6">
+                    <h3 class="text-xl font-semibold text-gov-blue mb-2"><i class="fas fa-gavel mr-2 text-gov-red"></i>Hiến pháp</h3>
+                    <p class="text-gray-800">Hiến pháp năm 2013 (các Điều 50, 53, 54, 63): Nền tảng về sở hữu toàn dân về đất đai.</p>
+                    <a href="#" class="inline-block mt-3 text-gov-blue font-semibold text-sm hover:underline">Xem toàn văn <i class="fas fa-arrow-right ml-1"></i></a>
+                </div>
+
+                <!-- Luật chuyên ngành (dạng card lưới) -->
+                <h3 class="text-xl font-semibold text-gov-blue mb-4">Luật (chuyên ngành)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <!-- Card 1 -->
+                    <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-gov-red hover:shadow-lg transition-shadow">
+                        <h4 class="font-bold text-gov-red text-lg">Luật Đất đai số 31/2024/QH15</h4>
+                        <p class="text-xs text-gray-500 mb-2">Hiệu lực: 01/08/2024</p>
+                        <p class="text-gray-700 text-sm">Đạo luật gốc, thay thế Luật Đất đai 2013. Văn bản quan trọng nhất.</p>
+                        <a href="#" class="inline-block mt-3 text-gov-blue font-semibold text-sm hover:underline">Xem toàn văn <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-yellow-600 hover:shadow-lg transition-shadow">
+                        <h4 class="font-bold text-gov-red text-lg">Luật số 43/2024/QH15</h4>
+                        <p class="text-xs text-gray-500 mb-2">Hiệu lực: 01/08/2024</p>
+                        <p class="text-gray-700 text-sm">Luật sửa đổi, bổ sung một số điều của Luật Đất đai.</p>
+                        <a href="#" class="inline-block mt-3 text-gov-blue font-semibold text-sm hover:underline">Xem toàn văn <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-600 hover:shadow-lg transition-shadow">
+                        <h4 class="font-bold text-gov-red text-lg">Luật Nhà ở (sửa đổi)</h4>
+                        <p class="text-xs text-gray-500 mb-2">Hiệu lực: 01/01/2025</p>
+                        <p class="text-gray-700 text-sm">Điều chỉnh các vấn đề về nhà ở gắn liền với đất.</p>
+                        <a href="#" class="inline-block mt-3 text-gov-blue font-semibold text-sm hover:underline">Xem toàn văn <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-green-600 hover:shadow-lg transition-shadow">
+                        <h4 class="font-bold text-gov-red text-lg">Luật Kinh doanh bất động sản (sửa đổi)</h4>
+                        <p class="text-xs text-gray-500 mb-2">Hiệu lực: 01/08/2024</p>
+                        <p class="text-gray-700 text-sm">Điều chỉnh hoạt động mua bán, chuyển nhượng dự án có sử dụng đất.</p>
+                        <a href="#" class="inline-block mt-3 text-gov-blue font-semibold text-sm hover:underline">Xem toàn văn <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                    <!-- Card 5 -->
+                    <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-purple-600 hover:shadow-lg transition-shadow">
+                        <h4 class="font-bold text-gov-red text-lg">Luật Công nghiệp công nghệ số 2025</h4>
+                        <p class="text-xs text-gray-500 mb-2">Hiệu lực: 01/01/2026</p>
+                        <p class="text-gray-700 text-sm">Quy định về quản lý đất trong khu công nghệ số tập trung.</p>
+                        <a href="#" class="inline-block mt-3 text-gov-blue font-semibold text-sm hover:underline">Xem toàn văn <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                    <!-- Card 6 -->
+                    <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-orange-600 hover:shadow-lg transition-shadow">
+                        <h4 class="font-bold text-gov-red text-lg">Luật Đường sắt 2025</h4>
+                        <p class="text-xs text-gray-500 mb-2">Hiệu lực: 01/01/2026</p>
+                        <p class="text-gray-700 text-sm">Sửa đổi quy định về đất xây dựng hạ tầng đường sắt.</p>
+                        <a href="#" class="inline-block mt-3 text-gov-blue font-semibold text-sm hover:underline">Xem toàn văn <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                </div>
+
+                <!-- Nghị quyết (Card) -->
+                <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-gov-red mb-6">
+                    <h3 class="text-xl font-semibold text-gov-blue mb-2"><i class="fas fa-file-contract mr-2 text-gov-red"></i>Nghị quyết của Quốc hội</h3>
+                    <p class="text-gray-800"><strong>Nghị quyết 254/2025/QH15</strong> (ngày 11/12/2025): Quy định cơ chế, chính sách tháo gỡ khó khăn, vướng mắc trong tổ chức thi hành Luật Đất đai. Đây là văn bản rất quan trọng, làm cơ sở cho các nghị định mới nhất năm 2026.</p>
+                    <a href="#" class="inline-block mt-3 text-gov-blue font-semibold text-sm hover:underline">Xem toàn văn <i class="fas fa-arrow-right ml-1"></i></a>
+                </div>
+            </div>
+
+            <!-- Sidebar (1/3) -->
+            <aside class="space-y-6">
+                <!-- Tìm kiếm nâng cao -->
+                <div class="bg-white p-5 rounded-lg shadow-md">
+                    <h3 class="font-bold text-gov-blue uppercase text-sm mb-3"><i class="fas fa-search mr-2"></i>Tìm kiếm văn bản</h3>
+                    <div class="flex flex-col gap-2">
+                        <input type="text" placeholder="Số hiệu, từ khóa..." class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gov-red">
+                        <select class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gov-red">
+                            <option>Loại văn bản</option>
+                            <option>Luật</option>
+                            <option>Nghị quyết</option>
+                            <option>Nghị định</option>
+                        </select>
+                        <button class="bg-gov-red text-white py-2 rounded hover:bg-red-700 transition text-sm font-semibold"><i class="fas fa-search mr-1"></i>Tìm kiếm</button>
+                    </div>
+                </div>
+
+                <!-- Văn bản mới nhất -->
+                <div class="bg-white p-5 rounded-lg shadow-md">
+                    <h3 class="font-bold text-gov-blue uppercase text-sm mb-3"><i class="fas fa-clock mr-2"></i>Văn bản mới nhất</h3>
+                    <ul class="divide-y divide-gray-200">
+                        <li class="py-2"><a href="#" class="hover:text-gov-red text-sm">Nghị định 15/2026/NĐ-CP hướng dẫn Luật Đất đai</a></li>
+                        <li class="py-2"><a href="#" class="hover:text-gov-red text-sm">Thông tư 05/2026/TT-BTNMT về định giá đất</a></li>
+                        <li class="py-2"><a href="#" class="hover:text-gov-red text-sm">Nghị quyết 254/2025/QH15 tháo gỡ vướng mắc</a></li>
+                        <li class="py-2"><a href="#" class="hover:text-gov-red text-sm">Luật Công nghiệp công nghệ số 2025</a></li>
+                        <li class="py-2"><a href="#" class="hover:text-gov-red text-sm">Luật Đường sắt 2025</a></li>
+                    </ul>
+                </div>
+
+                <!-- Từ khóa hot -->
+                <div class="bg-white p-5 rounded-lg shadow-md">
+                    <h3 class="font-bold text-gov-blue uppercase text-sm mb-3"><i class="fas fa-tags mr-2"></i>Từ khóa hot</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-xs">Đất đai 2024</span>
+                        <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-xs">Bồi thường</span>
+                        <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-xs">Giải phóng mặt bằng</span>
+                        <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-xs">Sổ đỏ</span>
+                        <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-xs">Đấu giá đất</span>
+                        <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-xs">Khung giá đất</span>
+                    </div>
+                </div>
+
+                <!-- Đăng ký nhận bản tin -->
+                <div class="bg-gov-blue text-white p-5 rounded-lg shadow-md">
+                    <h3 class="font-bold uppercase text-sm mb-2"><i class="fas fa-envelope mr-2"></i>Đăng ký nhận bản tin</h3>
+                    <p class="text-xs mb-3 opacity-90">Nhận thông báo văn bản mới qua email</p>
+                    <div class="flex flex-col gap-2">
+                        <input type="email" placeholder="Email của bạn" class="border border-white bg-transparent rounded px-3 py-2 text-sm placeholder-white/70 focus:outline-none">
+                        <button class="bg-white text-gov-blue py-2 rounded hover:bg-gray-100 transition text-sm font-semibold">Đăng ký</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer (cải tiến nhẹ) -->
+    <footer class="bg-gray-900 text-gray-400 py-12 mt-20">
+        <div class="container mx-auto px-4 text-center">
+            <img src="/logo-dai-hoc-tai-nguyen-va-moi-truong-ha-noi-768x768.webp" alt="Logo" class="h-16 mx-auto mb-4 object-contain">
+            <p class="text-sm font-bold text-white mb-2 uppercase tracking-widest">Cổng Thông tin Pháp luật Đất đai</p>
+            <p class="text-xs leading-relaxed max-w-2xl mx-auto">
+                © 2026 Bản quyền thuộc về Sinh viên Trường Đại học Tài nguyên và Môi trường Hà Nội. <br>
+                Ghi rõ nguồn "Cổng Thông tin Pháp luật Đất đai" khi phát hành lại thông tin từ website này.
+            </p>
+            <!-- Thêm liên kết mạng xã hội -->
+            <div class="flex justify-center gap-4 mt-4">
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot floating icon -->
+    <div id="chatbot-icon" title="Hỏi đáp AI về pháp luật">
+        <i class="fas fa-robot text-2xl"></i>
+    </div>
+
+    <!-- JavaScript giữ nguyên -->
+    <script>
+        function updateDate() {
+            const now = new Date();
+            const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+            const day = days[now.getDay()];
+            const date = now.getDate().toString().padStart(2, '0');
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const year = now.getFullYear();
+            document.getElementById('currentDate').innerHTML = `<i class="fas fa-calendar-alt mr-1"></i> ${day}, ngày ${date}/${month}/${year}`;
+        }
+        updateDate();
+        setInterval(updateDate, 60000);
+    </script>
+</body>
+</html>

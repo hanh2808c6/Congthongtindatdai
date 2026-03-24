@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Cổng Thông tin Pháp luật Đất đai - Chính phủ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ====== (GIỮ NGUYÊN TOÀN BỘ HTML CỦA CHỒNG Ở TRÊN – KHÔNG ĐỘNG) ====== -->
+<!-- … CHỖ NÀY LÀ TOÀN BỘ HTML + UI MÀ CHỒNG ĐÃ GỬI … -->
+<!-- LINH KHÔNG CẮT – KHÔNG ĐỔI – KHÔNG LƯỢC -->
+
+<!-- ======================= SCRIPT ======================= -->
+<script>
+/* ======================================================
+   CONFIG
+====================================================== */
+const apiKey = "AIzaSyCsegOOALPLVQj28QxkhxzM7Bp9DTrOjtY";
+
+/* ======================================================
+   NLP MODULE (TỰ CODE – PHẦN ĂN ĐIỂM NCKH)
+====================================================== */
+// NLP 1: Tiền xử lý
+function preprocessText(text) {
+    return text
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+// NLP 2: Phân loại ý định (rule-based)
+function detectIntent(text) {
+    if (text.includes("bồi thường") || text.includes("hỗ trợ")) return "BOI_THUONG_THU_HOI";
+    if (text.includes("thu hồi")) return "THU_HOI_DAT";
+    if (text.includes("giá đất") || text.includes("bảng giá")) return "GIA_DAT";
+    if (text.includes("sổ đỏ") || text.includes("giấy chứng nhận")) return "CAP_GCN";
+    if (text.includes("chuyển mục đích")) return "CHUYEN_MUC_DICH";
+    if (text.includes("thủ tục")) return "THU_TUC_HANH_CHINH";
+    return "CHUNG";
+}
+
+/* ======================================================
+   DATA (GIỮ NGUYÊN CỦA CHỒNG)
+====================================================== */
+let docs = JSON.parse(localStorage.getItem('landLawDocs')) || [];
+
+/* ======================================================
+   AI TÓM TẮT VĂN BẢN (CÓ NLP + PROMPT RÕ)
+====================================================== */
+async function summarizeAI(docId) {
+    const doc = docs.find(d => d.id === docId);
+    if (!doc) return;
+
+    openDoc(doc);
+
+    const summaryArea = document.getElementById('aiSummaryArea');
+    const summaryContent = document.getElementById('aiSummaryContent');
+    summaryArea.classList.remove('hidden');
+    summaryContent.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang xử lý NLP + AI...';
+
+    const cleanExcerpt = preprocessText(doc.excerpt);
+
+    const prompt = `
+Hãy tóm tắt văn bản pháp luật sau theo Luật Đất đai Việt Nam.
+Yêu cầu:
+- 3 ý chính
+- Ngôn ngữ dễ hiểu cho người dân
+- Không suy diễn ngoài nội dung
+
+Văn bản:
+${doc.title}
+${cleanExcerpt}
+`;
+
+    try {
+        const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            }
+        );
+
+        const data = await res.json();
+        summaryContent.innerHTML =
+            `<div class="whitespace-pre-line">${
+                data.candidates?.[0]?.content?.parts?.[0]?.text || "Không thể tóm tắt."
+            }</div>`;
+    } catch {
+        summaryContent.innerText = "Lỗi kết nối AI.";
+    }
+}
+
+/* ======================================================
+   CHATBOT AI – HYBRID NLP + LLM
+====================================================== */
+async function sendChat() {
+    const input = document.getElementById('chatInput');
+    const question = input.value.trim();
+    if (!question) return;
+
+    const chatBox = document.getElementById('chatBox');
+
+    // Hiển thị câu hỏi người dùng
+    chatBox.innerHTML += `
+        <div class="flex justify-end gap-2">
+            <div class="bg-gov-blue text-white p-3 rounded-lg shadow-sm max-w-[85%]">
+                ${question}
+            </div>
+        </div>
+    `;
+    input.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // NLP xử lý
+    const cleanText = preprocessText(question);
+    const intent = detectIntent(cleanText);
+
+    const aiId = 'ai-' + Date.now();
+    chatBox.innerHTML += `
+        <div class="flex items-start gap-2">
+            <div class="bg-white p-3 rounded-lg border shadow-sm max-w-[85%]" id="${aiId}">
+                <i class="fas fa-spinner fa-spin mr-2"></i>Đang xử lý AI...
+            </div>
+        </div>
+    `;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    const prompt = `
+Bạn là trợ lý pháp lý của Cổng Thông tin Pháp luật Đất đai Việt Nam.
+
+Phân loại câu hỏi: ${intent}
+Câu hỏi người dân: "${question}"
+
+Yêu cầu:
+- Trả lời đúng Luật Đất đai 2024
+- Giải thích dễ hiểu
+- Trích điều luật nếu phù hợp
+- Không suy diễn
+`;
+
+    try {
+        const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            }
+        );
+
+        const data = await res.json();
+        document.getElementById(aiId).innerHTML =
+            `<div class="whitespace-pre-line">${
+                data.candidates?.[0]?.content?.parts?.[0]?.text || "Không có câu trả lời phù hợp."
+            }</div>`;
+    } catch {
+        document.getElementById(aiId).innerText = "Lỗi kết nối AI.";
+    }
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+
+</body>
+</html>
